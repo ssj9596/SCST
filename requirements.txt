@@ -1,0 +1,12 @@
+torch==2.4.0
+xformers==0.0.27.post2
+accelerate==0.34.2
+av==13.0.0
+causal-conv1d==1.4.0
+diffusers==0.25.0
+einops==0.8.0
+mamba-ssm==2.2.2
+mmcv==2.2.0
+numpy==1.26.4
+omegaconf==2.3.0
+imageio-ffmpeg==0.5.1

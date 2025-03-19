@@ -1,0 +1,25 @@
+unet_additional_kwargs:
+  use_inflated_groupnorm: true
+  unet_use_cross_frame_attention: false 
+  unet_use_temporal_attention: false
+  use_controlnet_guide_attention: true
+  controlnet_guide_attention_temb: true
+  
+
+
+  motion_module_after_cg_attn : false
+  use_motion_module: true
+  motion_module_resolutions:
+  - 1
+  - 2
+  - 4
+  - 8
+  
+  motion_module_mid_block: false 
+  motion_module_decoder_only: true
+
+  motion_module_type: VideoMamba3D
+  motion_module_kwargs:
+    num_layers: 1
+    type: 1
+    scan_mode : "continue"
