@@ -29,26 +29,24 @@ _<sup>4</sup>Chinese Academy of Sciences_
 
 ## 📈 Our model can do both ISR and VSR. Hope you can enjoy it.
 ### Realistic Image SR
-<img src="assets/img3.gif" width="390px"/> <img src="assets/img3.gif" width="390px"/>
+<img src="assets/img1.gif" width="390px"/> <img src="assets/img2.gif" width="390px"/>
 
 ### Realistic Video SR
-<img src="assets/vid3.gif" width="390px"/> <img src="assets/vid3.gif" width="390px"/>
+<img src="assets/vid1.gif" width="390px"/> <img src="assets/vid2.gif" width="390px"/>
 
-## 🎬 Overview
-![overall_structure](assets/pipeline.png)
 
 ## 🔧 Dependencies and Installation
 1. Clone Repo
     ```bash
-    git clone https://github.com/sczhou/Upscale-A-Video.git
-    cd Upscale-A-Video
+    git clone https://github.com/ssj9596/SCST.git
+    cd SCST
     ```
 
 2. Create Conda Environment and Install Dependencies
     ```bash
     # create new conda env
-    conda create -n UAV python=3.9 -y
-    conda activate UAV
+    conda create -n SCST python=3.10
+    conda activate SCST
 
     # install python dependencies
     pip install -r requirements.txt
@@ -56,96 +54,60 @@ _<sup>4</sup>Chinese Academy of Sciences_
 
 3. Download Models
 
-   (a) Download pretrained models and configs from [Google Drive](https://drive.google.com/drive/folders/1O8pbeR1hsRlFUU8O4EULe-lOKNGEWZl1?usp=sharing) and put them under the `pretrained_models/upscale_a_video` folder.
+   - Download pretrained models from [huggingface](https://huggingface.co/MochunniaN1/SCST) and put them under the `checkpoints` folder.
+   - Download [SD2.1](https://huggingface.co/stabilityai/stable-diffusion-2-1-base) and put them into ``checkpoints/stable-diffusion-2-1-base``. 
 
-   The [`pretrained_models`](./pretrained_models) directory structure should be arranged as:
+   The [`checkpoints`](./checkpoints) directory structure should be arranged as:
 
     ```
-    ├── pretrained_models
-    │   ├── upscale_a_video
-    │   │   ├── low_res_scheduler
-    │   │       ├── ...
-    │   │   ├── propagator
-    │   │       ├── ...
-    │   │   ├── scheduler
-    │   │       ├── ...
-    │   │   ├── text_encoder
-    │   │       ├── ...
-    │   │   ├── tokenizer
-    │   │       ├── ...
-    │   │   ├── unet
-    │   │       ├── ...
-    │   │   ├── vae
-    │   │       ├── ...
+    ├── checkpoints
+    │   ├── controlnet
+    │   ├── stable-diffusion-2-1-base
+    │   ├── localatten_unet.pth
+    │   ├── mococtrl_unet.pth
+    │   ├── stcm_unet.pth
+  
     ```
-    
-    (a) (Optional) LLaVA can be downloaded automatically when set `--use_llava` to `True`, for users with access to huggingface.
-
 
 ## ☕️ Quick Inference
 
-The `--input_path` can be either the path to a single video or a folder containing multiple videos.
 
 We provide several examples in the [`inputs`](./inputs) folder. 
 Run the following commands to try it out:
 
 ```shell
-## AIGC videos
-python inference_upscale_a_video.py \
--i ./inputs/aigc_1.mp4 -o ./results -n 150 -g 6 -s 30 -p 24,26,28
-
-python inference_upscale_a_video.py \
--i ./inputs/aigc_2.mp4 -o ./results -n 150 -g 6 -s 30 -p 24,26,28
-
-python inference_upscale_a_video.py \
--i ./inputs/aigc_3.mp4 -o ./results -n 150 -g 6 -s 30 -p 20,22,24
+## Single Image 
+## no temporal module
+python inference/infer_mococtrl.py 
 ```
+
 
 ```shell
-## old videos/movies/animations 
-python inference_upscale_a_video.py \
--i ./inputs/old_video_1.mp4 -o ./results -n 150 -g 9 -s 30
-
-python inference_upscale_a_video.py \
--i ./inputs/old_movie_1.mp4 -o ./results -n 100 -g 5 -s 20 -p 17,18,19
-
-python inference_upscale_a_video.py \
--i ./inputs/old_movie_2.mp4 -o ./results -n 120 -g 6 -s 30 -p 8,10,12
-
-python inference_upscale_a_video.py \
--i ./inputs/old_animation_1.mp4 -o ./results -n 120 -g 6 -s 20 --use_video_vae
+## Video
+## use LocalAttention as temporal module
+python inference/infer_localatten.py
+## use Mamba as temporal module
+python inference/infer_stcm.py
 ```
 
-If you notice any color discrepancies between the output and the input, you can set `--color_fix` to `"AdaIn"` or `"Wavelet"`. By default, it is set to `"None"`.
+You can enter the script to modify the input path.
 
 
+## 🎬 Overview
+![overall_structure](assets/pipeline.png)
 
-## 🎞️ YouHQ Dataset
-The datasets are hosted on Google Drive
 
-| Dataset | Link | Description|
-| :----- | :--: | :---- | 
-| YouHQ-Train | [Google Drive](https://drive.google.com/file/d/1f8g8gTHzQq-cKt4s94YQXDwJcdjL59lK/view?usp=sharing)| 38,576 videos for training, each of which has around 32 frames.|
-| YouHQ40-Test| [Google Drive](https://drive.google.com/file/d/1rkeBQJMqnRTRDtyLyse4k6Vg2TilvTKC/view?usp=sharing) | 40 video clips for evaluation, each of which has around 32 frames.|
-
-## 📑 Citation
+<!-- ## 📑 Citation
 
    If you find our repo useful for your research, please consider citing our paper:
 
    ```bibtex
-   @inproceedings{zhou2024upscaleavideo,
-      title={{Upscale-A-Video}: Temporal-Consistent Diffusion Model for Real-World Video Super-Resolution},
-      author={Zhou, Shangchen and Yang, Peiqing and Wang, Jianyi and Luo, Yihang and Loy, Chen Change},
-      booktitle={CVPR},
-      year={2024}
-   }
-   ```
+   ``` -->
 
 
-## 📝 License
-
-This project is licensed under <a rel="license" href="./LICENSE">NTU S-Lab License 1.0</a>. Redistribution and use should follow this license.
+## Acknowledgments
+Our project is based on [diffusers](https://github.com/huggingface/diffusers).Some codes are brought from [MGLD](https://github.com/IanYeung/MGLD-VSR) and [PASD](https://github.com/yangxy/PASD). Thanks for their awesome works.
 
 
 ## 📧 Contact
-If you have any questions, please feel free to reach us at `shangchenzhou@gmail.com` or `peiqingyang99@outlook.com`. 
+If you have any questions, please feel free to reach us at `ssj180123@gmail.com`
