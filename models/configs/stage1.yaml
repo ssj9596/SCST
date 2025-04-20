@@ -1,0 +1,7 @@
+unet_additional_kwargs:
+  use_inflated_groupnorm: true
+  unet_use_cross_frame_attention: false 
+  unet_use_temporal_attention: false
+  use_controlnet_guide_attention: true
+  controlnet_guide_attention_temb: true
+  

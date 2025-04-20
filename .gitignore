@@ -2,7 +2,8 @@ stage3_LocalAttention_continue
 stage3_mambaC_noproj_continue
 checkpoints
 outputs
-scripts
-train_stage2.py
-train_stage13.py
-__pycache__
+stage1
+stage2
+stage3_stcm
+*__pycache__*
+REDS

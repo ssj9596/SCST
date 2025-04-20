@@ -41,7 +41,7 @@ class Bicubic_degradation:
 class LocalVideoDataset(Dataset):
     def __init__(
             self, 
-            meta_dir, 
+            meta_path, 
             hr_root,
             mode="all",
             image_size=512,
@@ -56,7 +56,7 @@ class LocalVideoDataset(Dataset):
         ):
         super(LocalVideoDataset, self).__init__()
         self.tokenizer = tokenizer
-        self.meta_dir = meta_dir
+        self.meta_path = meta_path
         self.hr_root = hr_root
         self.mode = mode
         self.interval_list = interval_list
@@ -78,7 +78,7 @@ class LocalVideoDataset(Dataset):
                 clip_name = os.path.basename(row['path'])[:-4]
                 self.captions[clip_name] = row['prompt']
 
-        with open(meta_dir, 'r') as fin:
+        with open(meta_path, 'r') as fin:
             for line in fin:
                 folder, frame_num = line.strip().split(' ')
                 frame_num = int(frame_num)

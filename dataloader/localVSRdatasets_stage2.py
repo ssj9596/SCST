@@ -29,7 +29,7 @@ from basicsr.utils import  img2tensor
 class LocalVideoDataset(Dataset):
     def __init__(
             self, 
-            meta_dir, 
+            meta_path, 
             hr_root,
             mode="all",
             image_size=512,
@@ -38,13 +38,13 @@ class LocalVideoDataset(Dataset):
             num_frame=5,
             degradation=[RealBasicVSR_degradation()],
             resize_bank=False,
-            crop_size=None,  # 新增参数
+            crop_size=None,
             caption_path=None,
             null_txt_ratio=0.5,
         ):
         super(LocalVideoDataset, self).__init__()
         self.tokenizer = tokenizer
-        self.meta_dir = meta_dir
+        self.meta_path = meta_path
         self.hr_root = hr_root
         self.mode = mode
         self.interval_list = interval_list
@@ -67,7 +67,7 @@ class LocalVideoDataset(Dataset):
                 clip_name = os.path.basename(row['path'])[:-4]
                 self.captions[clip_name] = row['prompt']
 
-        with open(meta_dir, 'r') as fin:
+        with open(meta_path, 'r') as fin:
             for line in fin:
                 folder, frame_num = line.strip().split(' ')
                 frame_num = int(frame_num)
@@ -84,7 +84,7 @@ class LocalVideoDataset(Dataset):
                 if folder_prefix not in self.sub_dict:
                     self.sub_dict[folder_prefix] = []
                 self.sub_dict[folder_prefix].append(sub)
-
+        # make sure different key from different video
         self.keys = list(set(self.keys))
 
 
@@ -132,8 +132,6 @@ class LocalVideoDataset(Dataset):
     
             degradation = random.choice(self.degradations)
 
-                
-
             img_gts, img_lqs = degradation.degrade_process(img_gts)
 
             img_gts = [torch.clamp(img_hr * 2.0 - 1.0, min=-1.0, max=1.0) for img_hr in img_gts]
@@ -143,7 +141,6 @@ class LocalVideoDataset(Dataset):
                 img_lqs = [torch.clamp(F.interpolate(img_lr.unsqueeze(0),
                     scale_factor=4, mode=mode, align_corners=False).squeeze(0), min=0.0, max=1.0) for img_lr in img_lqs]
 
-            
             if self.crop_size:
                 # random crop
                 h, w = img_gts[0].shape[-2:]
@@ -151,7 +148,6 @@ class LocalVideoDataset(Dataset):
                 left = random.randint(0, w - self.crop_size)
                 img_gts = [img[:, top:top + self.crop_size, left:left + self.crop_size] for img in img_gts]
                 img_lqs = [img[:, top:top + self.crop_size, left:left + self.crop_size] for img in img_lqs]
-
 
             example["pixel_values"] = torch.stack(img_gts)
             example["conditioning_pixel_values"] = torch.stack(img_lqs)

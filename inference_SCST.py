@@ -269,7 +269,7 @@ if __name__ == "__main__":
     parser.add_argument("--unet_config_path", type=str, default="", help="path of unet config")
 
     parser.add_argument("--save_video", action="store_true")
-    parser.add_argument("--frame_rate", type=int, default=25)
+    parser.add_argument("--frame_rate", type=int, default=12)
 
     # parser.add_argument("--mococtrl",  action="store_true")
     parser.add_argument("--prompt", type=str, default="", help="prompt for image generation")

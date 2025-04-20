@@ -115,7 +115,7 @@ class SKFF_Nonlinear(nn.Module):
         
         self.softmax = nn.Softmax(dim=1)
         self.norm = torch.nn.GroupNorm(num_groups=32, num_channels=in_channels, eps=1e-6, affine=True)
-        self.nonlinearity = nn.SELU()  # 添加非线性激活函数
+        self.nonlinearity = nn.SELU()
         self.conv_out = nn.Conv2d(in_channels, in_channels, kernel_size=3, padding=1)
 
     def forward(self, inp_feats):

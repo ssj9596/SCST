@@ -49,8 +49,9 @@ if __name__ == "__main__":
             "--prompt", prompt,
             "--negative_prompt", "blurry, dotted, noise, raster lines, unclear, lowres, over-smoothed",
             "--guidance_scale", "5.0",
+            "--frame_rate", "12",
             "--pretrained_model_path", pretrained_model_path,
             "--controlnet_path", controlnet_path,
-            # "--save_video",
+            "--save_video",
         ]
     subprocess.run(command, check=True)

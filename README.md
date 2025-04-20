@@ -24,6 +24,7 @@ _<sup>4</sup>Chinese Academy of Sciences_
 
 
 ## 🔥 Update
+- [2025.04] Training code and is released.
 - [2025.03] Inference code and checkpoint is released.
 
 
@@ -66,7 +67,6 @@ _<sup>4</sup>Chinese Academy of Sciences_
     │   ├── localatten_unet.pth
     │   ├── mococtrl_unet.pth
     │   ├── stcm_unet.pth
-  
     ```
 
 ## ☕️ Quick Inference
@@ -92,6 +92,58 @@ python inference/infer_stcm.py
 
 You can enter the script to modify the input path.
 
+
+## 🎬 Train A SCST
+
+We divide the training process into several steps to help you reproduce our results from scratch.
+
+---
+
+### 1. Download Pretrained Models
+Download **Stable Diffusion 2.1** from [HuggingFace](https://huggingface.co/stabilityai/stable-diffusion-2-1-base) and place it under the `checkpoints/stable-diffusion-2-1-base/` directory
+### 2. Download Training Datasets
+You can use either or both of the following datasets:
+- [REDS (Google Drive)](https://drive.google.com/file/d/1YLksKtMhd2mWyVSkvhDaDLWSc1qYNCz-/view)
+- [YouHQ (Google Drive)](https://drive.google.com/file/d/1f8g8gTHzQq-cKt4s94YQXDwJcdjL59lK/view)
+### 3. Prepare Dataset Format
+We use `.tar` packages of video frames as inputs. Follow the steps below:
+* Use [`dataloader/extract_sub_images.py`](./dataloader/extract_sub_images.py) to crop the high-resolution frames.
+* Pack Each Video Sequence into a `.tar` File and each file contains frame images named `{i%08d}.png`.
+* Prepare the Meta Info File Example ([`datasets_example/reds_meta_info_example.txt`](./datasets_example/reds_meta_info_example.txt)).
+
+Datasets structure:
+
+```
+datasets_example/
+└── REDS/
+    ├── 000_s001.tar 
+    ├── xxx.tar
+    ...
+```
+
+Example of reds_meta_info_example.txt:
+```
+000_s001 40
+```
+The frames inside the .tar file:
+```
+000_s001/00000000.png
+...
+000_s001/00000039.png
+```
+### 4. Modify Training Scripts and Start Training
+Edit the following parameters in [`train_stage13.py`](./train_stage13.py) and [`train_stage2.py`](./train_stage2.py) to match your data path:
+```
+meta_path = './datasets_example/reds_meta_info_example.txt'
+hr_root = './datasets_example/REDS/'
+```
+We provide training scripts for all three stages:
+* Stage 1: [`scripts/stage1.sh`](./scripts/stage1.sh)
+* Stage 2: [`scripts/stage2.sh`](./scripts/stage2.sh)
+* Stage 3 with LocalAttention: [`scripts/stage3_localatten.sh`](./scripts/stage3_localatten.sh)
+* Stage 3 with STCM: [`scripts/stage3_stcm.sh`](./scripts/stage3_stcm.sh)
+
+To ensure that Stage 2 and Stage 3 use the pre-trained model from the previous stage, make sure to set the `resume_path` parameter accordingly.
 
 ## 🎬 Overview
 ![overall_structure](assets/pipeline.png)

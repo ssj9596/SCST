@@ -8,7 +8,7 @@ import time
 
 if __name__ == "__main__":
     pretrained_model_path = "checkpoints/stable-diffusion-2-1-base"
-    controlnet_path = "checkpoints/controlnet"
+    controlnet_path = "stage2/checkpoint-55000/controlnet"
     init_noise_level = 999
     # added_noise_level ⬇ -> PSNR ⬆ 
     # choose from [999, 949, 899, 849, 799, 749, 699, 649, 599, 549, 500, 450, 400, 350, 300, 250, 200, 150, 100, 50]
