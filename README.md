@@ -17,6 +17,9 @@ _<sup>4</sup>Chinese Academy of Sciences_
         <a href="https://ssj9596.github.io/scst-project/" target='_blank'>
         <img src="https://img.shields.io/badge/🐳-Project%20Page-blue">
         </a>
+        <a href="https://arxiv.org/pdf/2506.01037" target='_blank'>
+        <img src="https://img.shields.io/badge/arXiv-2506.01037-b31b1b.svg">
+        </a>
     </h4>
 </div>
 
